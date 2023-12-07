@@ -12,4 +12,12 @@ public class Query
         var response = await spotifyService.GetFeaturedPlaylistsAsync();
         return response.Playlists.Items.Select(item => new Playlist(item)).ToList();
     }
+
+    [GraphQLDescription("A playlist owned by a Spotify user.")]
+    public async Task<Playlist?> GetPlaylist([ID] string id, SpotifyService spotifyService)
+    {
+        var response = await spotifyService.GetPlaylistAsync(id);
+        var playlist = new Playlist(response);
+        return playlist;
+    }
 }

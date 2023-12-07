@@ -29,4 +29,11 @@ public class Playlist
         Name = obj.Name;
         Description = obj.Description;
     }
+
+    public Playlist(SpotifyWeb.Playlist obj)
+    {
+        Id = obj.Id;
+        Name = obj.Name;
+        Description = obj.Description;
+    }
 }

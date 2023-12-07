@@ -1,4 +1,6 @@
-﻿namespace Odyssey.Liftoff;
+﻿using SpotifyWeb;
+
+namespace Odyssey.Liftoff;
 
 [GraphQLDescription("Information about a playlist owned by a Spotify user")]
 public class Playlist
@@ -19,5 +21,12 @@ public class Playlist
     {
         Id = id;
         Name = name;
+    }
+
+    public Playlist(PlaylistSimplified obj)
+    {
+        Id = obj.Id;
+        Name = obj.Name;
+        Description = obj.Description;
     }
 }

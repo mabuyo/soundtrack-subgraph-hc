@@ -1,6 +1,8 @@
+using Odyssey.Liftoff;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddGraphQLServer();
+builder.Services.AddGraphQLServer().AddQueryType<Query>();
 
 var app = builder.Build();
 

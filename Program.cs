@@ -8,6 +8,7 @@ builder.Services.AddHttpClient<SpotifyService>();
 builder
     .Services
     .AddGraphQLServer()
+    .AddApolloFederationV2()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
     .RegisterService<SpotifyService>();

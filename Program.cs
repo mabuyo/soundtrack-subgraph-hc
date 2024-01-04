@@ -32,4 +32,4 @@ app.UseCors();
 
 app.MapGraphQL();
 
-app.Run();
+app.RunWithGraphQLCommands(args);

@@ -425,6 +425,117 @@ namespace SpotifyWeb
             }
         }
 
+        /// <summary>
+        /// Search for Item
+        /// </summary>
+        /// <remarks>
+        /// Get Spotify catalog information about albums, artists, playlists, tracks, shows, episodes or audiobooks
+        /// <br/>that match a keyword string.&lt;br /&gt;
+        /// <br/>**Note: Audiobooks are only available for the US, UK, Ireland, New Zealand and Australia markets.**
+        /// </remarks>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<SearchResults> SearchAsync(string q, System.Collections.Generic.IEnumerable<SearchType> type, int? limit, int? offset, Include_external? include_external)
+        {
+            return SearchAsync(q, type, limit, offset, include_external, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Search for Item
+        /// </summary>
+        /// <remarks>
+        /// Get Spotify catalog information about albums, artists, playlists, tracks, shows, episodes or audiobooks
+        /// <br/>that match a keyword string.&lt;br /&gt;
+        /// <br/>**Note: Audiobooks are only available for the US, UK, Ireland, New Zealand and Australia markets.**
+        /// </remarks>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<SearchResults> SearchAsync(string q, System.Collections.Generic.IEnumerable<SearchType> type, int? limit, int? offset, Include_external? include_external, System.Threading.CancellationToken cancellationToken)
+        {
+            if (q == null)
+                throw new System.ArgumentNullException("q");
+
+            if (type == null)
+                throw new System.ArgumentNullException("type");
+
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/search?");
+            urlBuilder_.Append(System.Uri.EscapeDataString("q") + "=").Append(System.Uri.EscapeDataString(ConvertToString(q, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            foreach (var item_ in type) { urlBuilder_.Append(System.Uri.EscapeDataString("type") + "=").Append(System.Uri.EscapeDataString(ConvertToString(item_, System.Globalization.CultureInfo.InvariantCulture))).Append("&"); }
+            if (limit != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("limit") + "=").Append(System.Uri.EscapeDataString(ConvertToString(limit, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (offset != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("offset") + "=").Append(System.Uri.EscapeDataString(ConvertToString(offset, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (include_external != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("include_external") + "=").Append(System.Uri.EscapeDataString(ConvertToString(include_external, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<SearchResults>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
         protected struct ObjectResponseResult<T>
         {
             public ObjectResponseResult(T responseObject, string responseText)
@@ -3603,6 +3714,47 @@ namespace SpotifyWeb
         [Newtonsoft.Json.JsonProperty("/me/tracks", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
         public _me_tracks4 _me_tracks { get; set; } = new _me_tracks4();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SearchType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"album")]
+        Album = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"artist")]
+        Artist = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"playlist")]
+        Playlist = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"track")]
+        Track = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"show")]
+        Show = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"episode")]
+        Episode = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"audiobook")]
+        Audiobook = 6,
+
+    }
+
+    /// <summary>
+    /// If `include_external=audio` is specified it signals that the client can play externally hosted audio content, and marks
+    /// <br/>the content as playable in the response. By default externally hosted audio content is marked as unplayable in the response.
+    /// <br/>
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Include_external
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"audio")]
+        Audio = 0,
 
     }
 

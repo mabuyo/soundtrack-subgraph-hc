@@ -1,8 +1,10 @@
-﻿using SpotifyWeb;
+﻿using ApolloGraphQL.HotChocolate.Federation;
+using SpotifyWeb;
 
 namespace Odyssey.Liftoff;
 
 [GraphQLDescription("Information about a playlist owned by a Spotify user")]
+[Key("id")]
 public class Playlist
 {
     [GraphQLDescription("The Spotify ID for the playlist.")]
